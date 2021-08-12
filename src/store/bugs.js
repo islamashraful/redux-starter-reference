@@ -4,27 +4,38 @@ import { createSelector } from "reselect";
 let lastId = 0;
 const slice = createSlice({
   name: "bugs",
-  initialState: [],
+  initialState: {
+    list: [],
+    loading: false,
+    lastFetch: null,
+  },
   reducers: {
+    bugsReceived: (state, action) => {
+      state.list = action.payload;
+    },
     bugAssignedToUser: (state, action) => {
       const { bugId, userId } = action.payload;
-      const index = state.findIndex((item) => item.id === bugId);
-      state[index].userId = userId;
+      const index = state.list.findIndex((item) => item.id === bugId);
+      state.list[index].userId = userId;
     },
     bugAdded: (state, action) => {
-      state.push({
+      state.list.push({
         id: ++lastId,
         description: action.payload.description,
         resolved: false,
       });
     },
     bugResolved: (state, action) => {
-      const index = state.findIndex((item) => item.id === action.payload.id);
-      state[index].resolved = true;
+      const index = state.list.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      state.list[index].resolved = true;
     },
     bugRemoved: (state, action) => {
-      const index = state.findIndex((item) => item.id === action.payload.id);
-      state.splice(index, 1);
+      const index = state.list.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      state.list.splice(index, 1);
     },
   },
 });
@@ -37,13 +48,13 @@ export default slice.reducer;
 // Returns the bugs from cache
 export const getUnResolvedBugs = createSelector(
   (state) => state.entities.bugs,
-  (bugs) => bugs.filter((bug) => !bug.resolved)
+  (bugs) => bugs.list.filter((bug) => !bug.resolved)
 );
 
 export const getBugsByUser = (userId) =>
   createSelector(
     (state) => state.entities.bugs,
-    (bugs) => bugs.filter((bug) => bug.userId === userId)
+    (bugs) => bugs.list.filter((bug) => bug.userId === userId)
   );
 
 // export const getUnResolvedBugs = createSelector(

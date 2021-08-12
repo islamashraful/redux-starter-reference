@@ -15,18 +15,6 @@ const store = configureStore();
 store.dispatch(
   actions.apiCallBegan({
     url: "/bugs",
-    // onSuccess: actions.apiCallSuccess.type,
-    // onError: actions.apiCallFailed.type,
+    onSuccess: "bugs/bugsReceived",
   })
 );
-
-// store.dispatch({
-//   type: "apiCallBegan",
-//   payload: {
-//     url: "/bugs",
-//     // method: "get",
-//     // data: {},
-//     onSuccess: "bugsReceived",
-//     onError: "apiRequestFailed",
-//   },
-// });
