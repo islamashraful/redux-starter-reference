@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 
 let lastId = 0;
 const slice = createSlice({
@@ -26,5 +27,15 @@ const slice = createSlice({
 export const { bugAdded, bugRemoved, bugResolved } = slice.actions;
 export default slice.reducer;
 
-export const getUnResolvedBugs = (state) =>
-  state.entities.bugs.filter((bug) => !bug.resolved);
+// If bugs not changed from left side then the right side will not be executed
+// Returns the bugs from cache
+export const getUnResolvedBugs = createSelector(
+  (state) => state.entities.bugs,
+  (bugs) => bugs.filter((bug) => !bug.resolved)
+);
+
+// export const getUnResolvedBugs = createSelector(
+//   (state) => state.entities.bugs,
+//   (state) => state.entities.projects,
+//   (bugs, projects) => bugs.filter((bug) => !bug.resolved)
+// );

@@ -19,3 +19,5 @@ store.dispatch(bugResolved({ id: 1 }));
 store.dispatch(bugRemoved({ id: 3 }));
 
 const x = getUnResolvedBugs(store.getState());
+const y = getUnResolvedBugs(store.getState());
+console.log(x === y);
