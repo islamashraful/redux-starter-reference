@@ -13,7 +13,13 @@ const store = configureStore();
 
 // const unsubscribe = store.subscribe(() => console.log(store.getState()));
 
-store.dispatch(userAdded({ name: "User1" }));
+// store.dispatch(userAdded({ name: "User1" }));
+
+store.dispatch((dispatch, getState) => {
+  dispatch({ type: "bugsReceived", bugs: [1, 2, 3] });
+  console.log(getState());
+});
+
 // store.dispatch(userAdded({ name: "User2" }));
 // store.dispatch(projectAdded({ name: "project" }));
 // store.dispatch(bugAdded({ description: "A new bug1" }));
