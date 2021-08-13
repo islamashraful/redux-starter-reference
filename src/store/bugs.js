@@ -1,3 +1,4 @@
+import moment from "moment";
 import { createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
 import { apiCallBegan } from "./api";
@@ -17,6 +18,7 @@ const slice = createSlice({
     bugsReceived: (state, action) => {
       state.list = action.payload;
       state.loading = false;
+      state.lastFetch = Date.now();
     },
     bugsRequestFailed: (state, action) => {
       state.loading = false;
@@ -60,13 +62,23 @@ export const {
 export default slice.reducer;
 
 const url = "/bugs";
-export const loadBugs = () =>
-  apiCallBegan({
-    url,
-    onStart: bugsRequested.type,
-    onSuccess: bugsReceived.type,
-    onError: bugsRequestFailed.type,
-  });
+export const loadBugs = () => (dispatch, getState) => {
+  const { lastFetch } = getState().entities.bugs;
+
+  const diffInMinutes = moment().diff(moment(lastFetch), "minutes");
+  if (diffInMinutes < 10) {
+    return;
+  }
+
+  dispatch(
+    apiCallBegan({
+      url,
+      onStart: bugsRequested.type,
+      onSuccess: bugsReceived.type,
+      onError: bugsRequestFailed.type,
+    })
+  );
+};
 
 // If bugs not changed from left side then the right side will not be executed
 // Returns the bugs from cache
