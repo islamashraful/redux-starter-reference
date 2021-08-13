@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
 import { apiCallBegan } from "./api";
 
-let lastId = 0;
 const slice = createSlice({
   name: "bugs",
   initialState: {
@@ -29,11 +28,7 @@ const slice = createSlice({
       state.list[index].userId = userId;
     },
     bugAdded: (state, action) => {
-      state.list.push({
-        id: ++lastId,
-        description: action.payload.description,
-        resolved: false,
-      });
+      state.list.push(action.payload);
     },
     bugResolved: (state, action) => {
       const index = state.list.findIndex(
@@ -79,6 +74,14 @@ export const loadBugs = () => (dispatch, getState) => {
     })
   );
 };
+
+export const addBug = (bug) =>
+  apiCallBegan({
+    url,
+    method: "post",
+    data: bug,
+    onSuccess: bugAdded.type,
+  });
 
 // If bugs not changed from left side then the right side will not be executed
 // Returns the bugs from cache
