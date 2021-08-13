@@ -46,16 +46,16 @@ const slice = createSlice({
   },
 });
 
-export const {
+export default slice.reducer;
+
+const {
   bugAdded,
-  bugRemoved,
   bugResolved,
   bugAssignedToUser,
-  bugsReceived,
   bugsRequested,
+  bugsReceived,
   bugsRequestFailed,
 } = slice.actions;
-export default slice.reducer;
 
 const url = "/bugs";
 export const loadBugs = () => (dispatch, getState) => {
