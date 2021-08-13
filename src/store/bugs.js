@@ -30,6 +30,7 @@ const slice = createSlice({
     bugAdded: (state, action) => {
       state.list.push(action.payload);
     },
+    // resolveBug (command) - bugResolved (event)
     bugResolved: (state, action) => {
       const index = state.list.findIndex(
         (item) => item.id === action.payload.id
@@ -81,6 +82,14 @@ export const addBug = (bug) =>
     method: "post",
     data: bug,
     onSuccess: bugAdded.type,
+  });
+
+export const resolveBug = (id) =>
+  apiCallBegan({
+    url: url + "/" + id,
+    method: "patch",
+    data: { resolved: true },
+    onSuccess: bugResolved.type,
   });
 
 // If bugs not changed from left side then the right side will not be executed
