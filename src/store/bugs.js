@@ -23,7 +23,7 @@ const slice = createSlice({
       state.loading = false;
     },
     bugAssignedToUser: (state, action) => {
-      const { bugId, userId } = action.payload;
+      const { id: bugId, userId } = action.payload;
       const index = state.list.findIndex((item) => item.id === bugId);
       state.list[index].userId = userId;
     },
@@ -90,6 +90,13 @@ export const resolveBug = (id) =>
     method: "patch",
     data: { resolved: true },
     onSuccess: bugResolved.type,
+  });
+export const assignBugToUser = (bugId, userId) =>
+  apiCallBegan({
+    url: url + "/" + bugId,
+    method: "patch",
+    data: { userId },
+    onSuccess: bugAssignedToUser.type,
   });
 
 // If bugs not changed from left side then the right side will not be executed
