@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
+import { apiCallBegan } from "./api";
 
 let lastId = 0;
 const slice = createSlice({
@@ -40,9 +41,21 @@ const slice = createSlice({
   },
 });
 
-export const { bugAdded, bugRemoved, bugResolved, bugAssignedToUser } =
-  slice.actions;
+export const {
+  bugAdded,
+  bugRemoved,
+  bugResolved,
+  bugAssignedToUser,
+  bugsReceived,
+} = slice.actions;
 export default slice.reducer;
+
+const url = "/bugs";
+export const loadBugs = () =>
+  apiCallBegan({
+    url,
+    onSuccess: bugsReceived.type,
+  });
 
 // If bugs not changed from left side then the right side will not be executed
 // Returns the bugs from cache
