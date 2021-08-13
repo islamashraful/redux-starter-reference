@@ -11,8 +11,15 @@ const slice = createSlice({
     lastFetch: null,
   },
   reducers: {
+    bugsRequested: (state, action) => {
+      state.loading = true;
+    },
     bugsReceived: (state, action) => {
       state.list = action.payload;
+      state.loading = false;
+    },
+    bugsRequestFailed: (state, action) => {
+      state.loading = false;
     },
     bugAssignedToUser: (state, action) => {
       const { bugId, userId } = action.payload;
@@ -47,6 +54,8 @@ export const {
   bugResolved,
   bugAssignedToUser,
   bugsReceived,
+  bugsRequested,
+  bugsRequestFailed,
 } = slice.actions;
 export default slice.reducer;
 
@@ -54,7 +63,9 @@ const url = "/bugs";
 export const loadBugs = () =>
   apiCallBegan({
     url,
+    onStart: bugsRequested.type,
     onSuccess: bugsReceived.type,
+    onError: bugsRequestFailed.type,
   });
 
 // If bugs not changed from left side then the right side will not be executed
